@@ -7,6 +7,7 @@ import plotly.express as px
 # the actual page content is executed here by Streamlit
 st.title("Analysis of Feminist Presence on Wikipedia")
 st.markdown("---")
+st.markdown("Ellen Schmidt")
 
 # line plot comparing birth-year of feminist 
 
