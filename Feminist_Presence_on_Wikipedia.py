@@ -78,10 +78,10 @@ st.bar_chart(
 # selected_wave = st.selectbox('Wave', ['First-wave', 'Second-wave', 'Third-wave'])
 
 ## ---create piechart of average pageviews (out of total feminist pageviews)---
-st.write(f"Total Feminist Pageviews on Wikipedia from the First Week of January of 2024: {round(grouped_df['Total Pageviews Sum'].sum())} views.")
+st.write(f"Average Feminist Pageviews on Wikipedia from the First Week of January of 2024: {round(grouped_df['Average Pageviews'].sum())} views.")
 
-fig = px.pie(grouped_df[['Wave','Total Pageviews Sum']],
-             values = 'Total Pageviews Sum',
+fig = px.pie(grouped_df[['Wave','Average Pageviews']],
+             values = 'Average Pageviews',
              names = 'Wave')
 
 st.plotly_chart(fig, use_container_width=True)
