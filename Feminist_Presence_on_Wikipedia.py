@@ -108,3 +108,10 @@ fig = px.line(
     )
 
 st.plotly_chart(fig, use_container_width=True)
+
+
+# 1 for scholar/writer/artist
+# 2 for organizer/public figure/politician
+# 3 for both
+
+# where are the feminists listed on wikipedia from? they all seem to be from the west, perhaps because trhats what recordss show, but there were definitely more that weren't from the west
