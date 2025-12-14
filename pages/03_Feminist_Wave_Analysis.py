@@ -4,15 +4,13 @@ import math
 import plotly.graph_objects as go
 import plotly.express as px
 
-# the actual page content is executed here by Streamlit
-st.title("Analysis of Feminist Presence on Wikipedia")
+st.title("Waves of Feminism")
 st.markdown("---")
 st.markdown("Ellen Schmidt")
 
 # line plot comparing birth-year of feminist 
-
 ## ---prepare data for analysis---
-line_plot_df = pd.read_csv("line_plot_average_pageviews.csv")[['Birthyear','average_pageviews']]
+line_plot_df = pd.read_csv("data/line_plot_average_pageviews.csv")[['Birthyear','average_pageviews']]
 
 line_plot_df["Birthyear"] = pd.to_datetime(line_plot_df["Birthyear"], errors="coerce")
 
@@ -45,7 +43,7 @@ st.plotly_chart(fig, use_container_width=True)
 # popularity of feminists based on wave (average pageviews)
 
 ## ---create data---
-list_of_feminists = pd.read_csv("line_plot_average_pageviews.csv")
+list_of_feminists = pd.read_csv("data/line_plot_average_pageviews.csv")
 wave_present = list_of_feminists[list_of_feminists['wave'].notna()]
 
 grouped_mean = wave_present.groupby('wave')['average_pageviews'].mean()
@@ -90,10 +88,10 @@ st.plotly_chart(fig, use_container_width=True)
 # average pageviews based on wave of feminism over the 7-day period
 
 ## ---create data---
-pageview_data = pd.read_csv("pageview_data.csv")
+pageview_data = pd.read_csv("data/cleaned_pageview_data.csv")
 pageview_data = pageview_data[pageview_data['wave'].notna()]
 
-grouped_2 = pageview_data.groupby(['Unnamed: 0','wave'])['pageviews'].mean()
+grouped_2 = pageview_data.groupby(['Unnamed: 0','wave'])['int_pageviews'].mean()
 
 grouped_2_df = pd.DataFrame({'Day':[0,0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],'Wave':['First-wave','Second-wave','Third_wave']*7,"Mean Pageviews":grouped_2.values})
 
@@ -113,5 +111,3 @@ st.plotly_chart(fig, use_container_width=True)
 # 1 for scholar/writer/artist
 # 2 for organizer/public figure/politician
 # 3 for both
-
-# where are the feminists listed on wikipedia from? they all seem to be from the west, perhaps because trhats what recordss show, but there were definitely more that weren't from the west
