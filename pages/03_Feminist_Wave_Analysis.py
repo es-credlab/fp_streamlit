@@ -4,9 +4,16 @@ import math
 import plotly.graph_objects as go
 import plotly.express as px
 
-st.title("Waves of Feminism")
-st.markdown("---")
-st.markdown("Ellen Schmidt")
+st.set_page_config(layout="wide")
+
+st.title("Feminist Popularity based on Wave of Feminism")
+st.write('''The page is dedicated to analyze the popularity of each wave of feminism (first, second, and third wave, excluding the fourth wave)
+         and the potential for a feminist's wave could infl;uence their popularity on Wikipedia.
+         Wave popularity is determined by the average article pageviews per day that feminist articles who are
+         associated with that specified wave recieve and the total pageviews those articles recieve over the seven day testing period.
+         ''')
+st.write("The first few visualizations break down basci summary statistics about each wave of feminism depending on the feminists who are associated " \
+"with that wave. The last line plot is associated with the widget where you can select which waves of feminism to compare.")
 
 # line plot comparing birth-year of feminist 
 ## ---prepare data for analysis---
@@ -21,7 +28,7 @@ max_date = line_plot_df["Birthyear"].max().date()
 
 ## ---create widget---
 start_date, end_date = st.date_input(
-    "Select date range:",
+    "Select date range to get started - ",
     (min_date, max_date),
     min_value=min_date,
     max_value=max_date
@@ -55,45 +62,42 @@ grouped_df = pd.DataFrame({'Wave':grouped_mean.index,'Count':grouped_count.value
 ## most viewed feminists
 st.dataframe(grouped_df)
 
+col1, col2 = st.columns([1, 1])
 ## ---create bargraph of average pageviews and total pageviews sum---
-st.bar_chart(
+with col1:
+    st.bar_chart(
     grouped_df,
     x='Wave',
     y=['Average Pageviews','Total Pageviews Sum'],
     x_label='Number of Pageviews',
     horizontal=True # Set to True for a horizontal orientation
-)
+    )
 
 ## ---create bargraph of wave count---
-st.bar_chart(
+with col2:
+    st.bar_chart(
     grouped_df,
     x='Wave',
     y='Count',
     x_label='Number of Related Articles',
     horizontal=False # Set to True for a horizontal orientation
-)
-
-## create widget
-# selected_wave = st.selectbox('Wave', ['First-wave', 'Second-wave', 'Third-wave'])
+    )
 
 ## ---create piechart of average pageviews (out of total feminist pageviews)---
-st.write(f"Average Feminist Pageviews on Wikipedia from the First Week of January of 2024: {round(grouped_df['Average Pageviews'].sum())} views.")
 
-fig = px.pie(grouped_df[['Wave','Average Pageviews']],
-             values = 'Average Pageviews',
-             names = 'Wave')
-
-st.plotly_chart(fig, use_container_width=True)
-
+selected_wave = st.multiselect('Wave', ['First-wave','Second-wave','Third_wave'])
 # average pageviews based on wave of feminism over the 7-day period
 
 ## ---create data---
 pageview_data = pd.read_csv("data/cleaned_pageview_data.csv")
 pageview_data = pageview_data[pageview_data['wave'].notna()]
 
-grouped_2 = pageview_data.groupby(['Unnamed: 0','wave'])['int_pageviews'].mean()
+grouped_2 = pageview_data.groupby(['date_object','wave'])['pageviews'].mean()
 
 grouped_2_df = pd.DataFrame({'Day':[0,0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],'Wave':['First-wave','Second-wave','Third_wave']*7,"Mean Pageviews":grouped_2.values})
+
+## create widget
+grouped_2_df = grouped_2_df[grouped_2_df['Wave'].isin(selected_wave)]
 
 ## ---create line-plot---
 fig = px.line(
@@ -107,7 +111,4 @@ fig = px.line(
 
 st.plotly_chart(fig, use_container_width=True)
 
-
-# 1 for scholar/writer/artist
-# 2 for organizer/public figure/politician
-# 3 for both
+st.dataframe(grouped_2_df)
